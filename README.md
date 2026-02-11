@@ -4,7 +4,7 @@ A Flutter learning project with an animated Hello World screen.
 
 ## Screenshot
 
-![App Screenshot](screenshots/hello_world.png)
+![App Screenshot](out_put/hello_world.png)
 
 ## Features
 
@@ -16,6 +16,7 @@ A Flutter learning project with an animated Hello World screen.
 ## Getting Started
 
 Run the app:
+
 ```bash
 flutter run
 ```
