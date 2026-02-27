@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'counter_model.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    // Step 1: Wrap app with ChangeNotifierProvider
+    // This makes CounterModel available to all child widgets
+    ChangeNotifierProvider(
+      create: (context) => CounterModel(), // Initialize the state
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,126 +20,147 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(brightness: Brightness.dark),
-      home: const HelloWorldScreen(),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const CounterScreen(),
     );
   }
 }
 
-class HelloWorldScreen extends StatefulWidget {
-  const HelloWorldScreen({super.key});
-
-  @override
-  State<HelloWorldScreen> createState() => _HelloWorldScreenState();
-}
-
-class _HelloWorldScreenState extends State<HelloWorldScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class CounterScreen extends StatelessWidget {
+  const CounterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF667eea),
-              Color(0xFF764ba2),
-              Color(0xFFf093fb),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _scaleAnimation.value,
-                    child: Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.3),
-                              blurRadius: 30,
-                              spreadRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.waving_hand,
-                          size: 80,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                'Hello World',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 4,
-                    ),
-                  ],
+      appBar: AppBar(
+        title: const Text('Provider Counter Example'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'You have pushed the button this many times:',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            
+            // Step 2: Use Consumer to listen to state changes
+            // Only this widget rebuilds when count changes
+            Consumer<CounterModel>(
+              builder: (context, counter, child) {
+                return Text(
+                  '${counter.count}',
+                  style: const TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                );
+              },
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Buttons row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Decrement button
+                ElevatedButton(
+                  onPressed: () {
+                    // Step 3: Use context.read() to update state
+                    // read() doesn't listen for changes, just calls the method
+                    context.read<CounterModel>().decrement();
+                  },
+                  child: const Icon(Icons.remove),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Welcome to Flutter',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white.withOpacity(0.9),
-                  letterSpacing: 1,
+                
+                const SizedBox(width: 20),
+                
+                // Reset button
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<CounterModel>().reset();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                  ),
+                  child: const Text('Reset'),
                 ),
-              ),
-            ],
-          ),
+                
+                const SizedBox(width: 20),
+                
+                // Increment button
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<CounterModel>().increment();
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Info card explaining Provider
+            const InfoCard(),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+// This widget doesn't rebuild when counter changes
+// because it doesn't consume the state
+class InfoCard extends StatelessWidget {
+  const InfoCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text(
+            'How Provider Works:',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            '1. CounterModel holds the state (count)',
+            style: TextStyle(fontSize: 14),
+          ),
+          Text(
+            '2. Consumer listens for changes',
+            style: TextStyle(fontSize: 14),
+          ),
+          Text(
+            '3. Buttons use read() to update state',
+            style: TextStyle(fontSize: 14),
+          ),
+          Text(
+            '4. notifyListeners() triggers rebuild',
+            style: TextStyle(fontSize: 14),
+          ),
+          Text(
+            '5. Only Consumer widget rebuilds!',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
