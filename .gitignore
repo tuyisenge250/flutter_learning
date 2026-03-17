@@ -1,45 +1,98 @@
+# ============================================================
+# Multi-project Flutter/Dart workspace .gitignore
+# ============================================================
+
+# ------------------------------------------------------------
 # Miscellaneous
+# ------------------------------------------------------------
 *.class
 *.log
 *.pyc
 *.swp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# ------------------------------------------------------------
+# IDE / Editor
+# ------------------------------------------------------------
+
+# IntelliJ / Android Studio
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
+# VS Code (uncomment if you do NOT want to share launch configs)
 #.vscode/
 
-# Flutter/Dart/Pub related
+# ------------------------------------------------------------
+# Flutter / Dart / Pub — applies to every project in the repo
+# ------------------------------------------------------------
 **/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/build/
+**/coverage/
 
-# Symbolication related
+# iOS Flutter build artefacts
+**/ios/Flutter/.last_build_id
+
+# Symbolication
 app.*.symbols
 
-# Obfuscation related
+# Obfuscation mapping
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ------------------------------------------------------------
+# Android — applies to every project's android/ folder
+# ------------------------------------------------------------
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/local.properties
+**/android/.gradle/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/gradle/wrapper/gradle-wrapper.jar
+**/android/key.properties
+**/*.keystore
+**/*.jks
+
+# ------------------------------------------------------------
+# iOS / macOS — applies to every project's ios/ & macos/ folders
+# ------------------------------------------------------------
+**/ios/Pods/
+**/ios/.symlinks/
+**/macos/Pods/
+**/macos/.symlinks/
+**/*.xcworkspace/xcuserdata/
+**/*.xcodeproj/xcuserdata/
+**/DerivedData/
+**/*.moved-aside
+**/*.pbxuser
+**/*.mode1v3
+**/*.mode2v3
+**/*.perspectivev3
+
+# ------------------------------------------------------------
+# Web
+# ------------------------------------------------------------
+**/web/.dart_tool/
+
+# ------------------------------------------------------------
+# Generated / output files
+# ------------------------------------------------------------
+**/out_put/
+**/*.g.dart
+**/*.freezed.dart
+**/*.mocks.dart
+**/*.gr.dart
