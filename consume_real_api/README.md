@@ -176,9 +176,11 @@ The **entire body** of `PostsListScreen` is driven by `FutureBuilder`. Nothing i
 
 ---
 
-## Overview
+## Report
 
-Posts Manager is a Flutter mobile application that allows staff at a small media company to view, create, edit, and delete posts through a REST API. The backend is simulated using JSONPlaceholder, a free fake API for testing and prototyping.
+The full lab report is available as a PDF:
+
+[consuming_api.pdf](report/consuming_api.pdf)
 
 ---
 
